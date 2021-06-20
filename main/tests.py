@@ -3,8 +3,8 @@ from django.test import TestCase
 # Create your tests here.
 
 class TestPage(TestCase):
-    '''Test for http status code = 200 OK,
-    home.html template used and response containing name of the bookshop
+    '''Test for http status code = 200 OK, if home.html template used and 
+    response containing name ebookstore.
     '''
     def test_home_page_works(self):
         response = self.client.get('/')
