@@ -1,0 +1,55 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--  Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href= "{% static bootstrap.min.css %}">
+        <title>ebookstore</title>
+
+    </head>
+    <body>
+
+        <nav class="navbar navabar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/"> EBOOKSTORE</a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navabarSupportedContent">
+                    <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" 
+                id="navbarSupportedContent">
+
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item {% if request.path == '/' %} active {% endif %}">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/about-us/' %} active {% endif %}">
+                        <a class="nav-link" href="/about-us/">About us</a>
+                    </li>
+                </ul>
+            
+            </div>       
+
+        </nav>
+
+        {% block content %}
+
+        {% endblock content %}
+
+        <script>
+            src="{% static jquery.min.js %}"
+        </script>
+        <script>
+            src="{% static popper.min.js %}"
+        </script>
+        <script>
+            src="{% static bootstrap.min.js %}"
+        </script>
+    </body>
+</html>

@@ -74,16 +74,24 @@ WSGI_APPLICATION = 'ebookstore.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'mydatabase',
+#         'USER': 'mydatabaseuser',
+#         'PASSWORD': 'mypassword',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
-        'USER': 'mydatabaseuser',
-        'PASSWORD': 'mypassword',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation
@@ -134,7 +142,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Prints/Tracks whats happening during the runtime 
+# Logs runtime events 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -144,9 +152,14 @@ LOGGING = {
         },
     },
     'handlers': {
-        'console':'DEBUG',
-        'class': 'logging.StreamHandler',
-        'formatter': 'simple'
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        }
+        # 'console':'DEBUG',
+        # 'class': 'logging.StreamHandler',
+        # 'formatter': 'simple'
         },
     'loggers':{
         'main': {
