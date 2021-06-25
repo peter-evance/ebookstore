@@ -7,10 +7,42 @@
     <p>Contact us through the form below</p>
     <form method="POST">
         {% csrf_token %}
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            <input
+                type="text"
+                class = "form-control {% if form.name.errors %}is-invalid {% endif %}"
+                id="id_name"
+                name="name"
+                placeholder="Your name"
+                value="{{ form.name.value|default:'' }}">
+                {% if form.name.errors %}
 
-        {{ form }}
+                <div class="invalid-feedback">
+                    {{ form.name.errors }}
+                </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form.message.label_tag }}
+                    <textarea class= "form-control {% if form.message.errors %} is-invalid {% endif %}" id="id_message" name="message" rows="3">
+                        {{ form.message.value| default:"" }}
+                    </textarea>
+
+                    {% if form.message.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.message.errors }}
+                    </div>
+
+                    {% endif %}
+                </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        
+
+       
     </form>
 
 {% endblock content %}
