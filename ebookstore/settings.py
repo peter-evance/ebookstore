@@ -151,26 +151,22 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Logs runtime events 
+# Logs runtime events
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format' : '%(levelname)s %(message)s'
+            'format': '%(levelname)s %(message)s'
         },
     },
     'handlers': {
-        'console':{
+        'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        }
-        # 'console':'DEBUG',
-        # 'class': 'logging.StreamHandler',
-        # 'formatter': 'simple'
-        },
-    'loggers':{
+            'formatter': 'simple'}
+    },
+    'loggers': {
         'main': {
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -180,6 +176,6 @@ LOGGING = {
     'ebookstore': {
         'handlers': ['console'],
         'level': 'DEBUG',
-        'propagate':True,
+        'propagate': True,
     },
 }
