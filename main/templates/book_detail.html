@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Books</h1>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <td>{{ object.name }}</td>
+        </tr>
+        <tr>
+            <th>Cover images</th>
+            <td>
+                {% for image in object.productimage_set.all %}
+                <img src="{{ image.thumbnail.url }}" alt="cover"/>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Price</th>
+                <td>{{ object.price }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+                <td>{{ object.description|linebreaks }}</td>
+        </tr>
+        <tr>
+            <th>Tags</th>
+                <td>{{ object.tags.all|join:","|default:"No tagsavailable" }}</td>
+        </tr>
+        <tr>
+            <th>In stock</th>
+                <td>{{ object.in_stock|yesno|capfirst }}</td>
+        </tr>
+        <tr>
+            <th>Updated</th>
+                <td>{{ object.date_updated|date:"F Y" }}</td>
+        </tr>
+    </table>
+    <a href="{% url 'add_to_basket' %}?book_id={{ object.id }}">Add to basket</a>
+
+{% endblock content %}
