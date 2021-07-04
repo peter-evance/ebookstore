@@ -102,6 +102,9 @@ if not DEBUG:
 else:
     EMAIL_BACKEND = ('django.core.mail.backends.console.EmailBackend')
 
+# Points to the custom user model
+AUTH_USER_MODEL = 'main.User'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
