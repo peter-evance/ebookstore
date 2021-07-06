@@ -24,15 +24,11 @@ class UserCreationForm(DjangoUserCreationForm):
         send_mail(
             "Welcome to ebookstore",
             message,
-            "site@booktime.domain",
+            "site@ebookstore.domain",
             [self.cleaned_data["email"]],
         fail_silently=True,
         )
         
-
-
-
-
 
 
 class ContactUsForm(forms.Form):
