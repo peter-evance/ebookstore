@@ -2,6 +2,8 @@ from main import forms, models
 from django.test import TestCase
 from django.urls import reverse
 from decimal import Decimal
+from unittest.mock import patch
+from django.contrib import auth
 
 
 class TestPage(TestCase):
@@ -68,3 +70,35 @@ class TestPage(TestCase):
             tags__slug="opensource").order_by("name"))
         self.assertEqual(
             list(response.context["object_list"]), list(book_list))
+
+    def test_user_signup_page_loads_correctly(self):
+        response = self.client.get(reverse("signup"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, "ebookstore")
+        self.assertIsInstance(
+            response.context["form"], forms.UserCreationForm
+            )
+    
+    def test_user_signup_page_submission_works(self):
+        post_data = {
+            "email": "peterevance1@gmail.com",
+            "password1": "abcabcabc",
+            "password2": "abcabcabc",
+            }
+        with patch.object(
+            forms.UserCreationForm, "send_mail"
+            ) as mock_send:
+            response = self.client.post(
+                reverse("signup"), post_data
+                )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            models.User.objects.filter(
+                email="peterevance1@gmail.com"
+            ).exists()
+        )
+        self.assertTrue(
+            auth.get_user(self.client).is_authenticated
+        )
+        mock_send.assert_called_once()

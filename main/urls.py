@@ -8,6 +8,7 @@ urlpatterns = [
 
     path('contact-us/', views.ContactUsView.as_view(), name='contact_us'),
     path('books/<slug:tag>/', views.BookListView.as_view(), name='books'),
-    path('book/<slug:slug>/', DetailView.as_view(model=models.Book), name='book')
+    path('book/<slug:slug>/', DetailView.as_view(model=models.Book), name='book'),
+    path('signup/', views.SignupView.as_view(), name="signup",)
 
 ]
