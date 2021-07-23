@@ -14,6 +14,7 @@ urlpatterns = [
     path('address/<int:pk>/delete/',views.AddressDeleteView.as_view(),name="address_delete"),
     path('books/<slug:tag>/', views.BookListView.as_view(), name='books'),
     path('book/<slug:slug>/', DetailView.as_view(model=models.Book), name='book'),
+    path('add-to-basket/',views.add_to_basket, name="add_to_basket")
     
 
 ]

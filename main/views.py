@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.views.generic.edit import FormView, CreateView,UpdateView,DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from main import models, forms
+from django.http import HttpResponseRedirect
 
 
 logger = logging.getLogger(__name__)
@@ -118,3 +119,23 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
     
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
+    
+    
+def add_to_basket(request):
+    book = get_object_or_404(models.Book, pk=request.GET.get("book_id"))
+    basket = request.basket
+    if not request.basket:
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user = None
+            basket = models.Basket.objects.create(user=user)
+            request.session["basket_id"] = basket.id
+            basketline, created = models.BasketLine.objects.get_or_create(
+                basket=basket, book=book
+                )
+            if not created:
+                basketline.quantity += 1
+                basketline.save()
+                return HttpResponseRedirect(
+                    reverse("book", args=(book.slug,)))
