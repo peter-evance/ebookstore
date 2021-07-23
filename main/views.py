@@ -1,9 +1,11 @@
 import logging
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, CreateView,UpdateView,DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from main import models, forms
 
 
@@ -65,3 +67,26 @@ tag all is specified'''
         else:
             books = models.Book.objects.active()
         return books.order_by("name")
+
+class AddressListView(LoginRequiredMixin, ListView):
+    model = models.Address
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+class AddressCreateView(LoginRequiredMixin, CreateView):
+    model = models.Address
+    fields = [
+        "name",
+        "address1",
+        "address2",
+        "zip_code",
+        "city",
+        "county",
+    ]
+    
+    success_url = reverse_lazy("address_list")
+    def form_valid(self, form):
+        obj= form.save(commit=False)
+        obj.user= self.request.user
+        obj.save()
+        return super().form_valid(form)
+    
