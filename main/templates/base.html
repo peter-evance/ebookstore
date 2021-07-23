@@ -42,6 +42,14 @@
         <div class="alert alert-{{ message.tags }}">{{ message }}</div>
         {% endfor %}
         
+
+         {% if request.basket %}
+            <div>
+                {{ request.basket.count }}
+                items in basket
+            </div>
+          {% endif %}
+
         {% block content %}
 
         {% endblock content %}
