@@ -3,8 +3,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 from django.contrib.auth.forms import UsernameField
 from django.core.mail import send_mail
-from .models import User
+from .models import User,Basket,BasketLine
 from django.contrib.auth import authenticate
+from django.forms import inlineformset_factory
 
 
 logger = logging.getLogger(__name__)
@@ -79,4 +80,10 @@ class ContactUsForm(forms.Form):
             ["customerservice@ebookstore.doman"],
             fail_silently=False
         )
-        
+
+BasketLineFormSet = inlineformset_factory(
+    Basket,
+    BasketLine,
+    fields=("quantity",),
+    extra=0,
+    )
