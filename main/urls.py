@@ -15,7 +15,9 @@ urlpatterns = [
     path('books/<slug:tag>/', views.BookListView.as_view(), name='books'),
     path('book/<slug:slug>/', DetailView.as_view(model=models.Book), name='book'),
     path('basket/',views.manage_basket,name="basket"),
-    path('add-to-basket/',views.add_to_basket, name="add_to_basket")
+    path('add-to-basket/',views.add_to_basket, name="add_to_basket"),
+    path('order/done/',TemplateView.as_view(template_name="order_done.html"),name="checkout_done"),
+    path('order/address_select/',views.AddressSelectionView.as_view(),name="address_select"),
     
 
 ]
