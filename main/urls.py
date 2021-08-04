@@ -1,3 +1,4 @@
+from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.urls import path
 from main import models, views, forms
@@ -19,5 +20,4 @@ urlpatterns = [
     path('order/done/',TemplateView.as_view(template_name="order_done.html"),name="checkout_done"),
     path('order/address_select/',views.AddressSelectionView.as_view(),name="address_select"),
     
-
 ]
