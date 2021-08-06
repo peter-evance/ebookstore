@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'main.apps.MainConfig',
 ]
 
@@ -106,7 +107,20 @@ else:
 # Points to the custom user model
 AUTH_USER_MODEL = 'main.User'
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.SessionAuthentication',
+         'rest_framework.authentication.BasicAuthentication'),
+    'DEFAULT_PERMISSION_CLASSES':
+        ('rest_framework.permissions.DjangoModelPermissions',),
+    'DEFAULT_FILTER_BACKENDS':
+        ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100
+    }
+    
+    
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
