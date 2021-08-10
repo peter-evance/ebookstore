@@ -1,8 +1,14 @@
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.urls import path
+from django.urls import path, include
 from main import models, views, forms
 from django.contrib.auth.views import LoginView
+from rest_framework import routers
+from main import endpoints
+
+router = routers.DefaultRouter()
+router.register(r'orderlines', endpoints.PaidOrderLineViewSet)
+router.register(r'orders', endpoints.PaidOrderViewSet)
 
 
 urlpatterns = [
@@ -19,5 +25,6 @@ urlpatterns = [
     path('add-to-basket/',views.add_to_basket, name="add_to_basket"),
     path('order/done/',TemplateView.as_view(template_name="order_done.html"),name="checkout_done"),
     path('order/address_select/',views.AddressSelectionView.as_view(),name="address_select"),
+    path('api/', include(router.urls)),
     
 ]

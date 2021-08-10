@@ -100,7 +100,7 @@ class OrderLineInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "status")
     list_editable = ("status",)
-    list_filter = ("status", "shipping_country", "date_added")
+    list_filter = ("status", "shipping_county", "date_added")
     inlines = (OrderLineInline,)
     fieldsets = (
         (None, {"fields": ("user", "status")}),
