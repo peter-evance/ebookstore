@@ -1,0 +1,34 @@
+[
+    {
+        "model": "auth.group",
+        "fields": {
+            "name": "Employees",
+            "permissions": [
+                [ "add_address", "main", "address" ],
+                [ "change_address", "main", "address" ],
+                [ "delete_address", "main", "address" ],
+                [ "change_order", "main", "order" ],
+                [ "add_orderline", "main", "orderline" ],
+                [ "change_orderline", "main", "orderline" ],
+                [ "delete_orderline", "main", "orderline" ],
+                [ "add_book", "main", "book" ],
+                [ "change_book", "main", "book" ],
+                [ "delete_book", "main", "book" ],
+                [ "add_bookimage", "main", "bookimage" ],
+                [ "change_bookimage", "main", "bookimage" ],
+                [ "delete_bookimage", "main", "bookimage" ],
+                [ "change_booktag", "main", "booktag" ]
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "fields": {
+            "name": "Dispatchers",
+            "permissions": [
+                [ "change_orderline", "main", "orderline" ],
+                [ "change_book", "main", "book" ]
+            ]
+        }
+    }
+]
