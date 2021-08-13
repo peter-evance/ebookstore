@@ -20,7 +20,9 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.main_admin.urls),
+    path("office-admin/", admin.central_office_admin.urls),
+    path("dispatch-admin/", admin.dispatchers_admin.urls),
     path('', include('main.urls')),
     path('', TemplateView.as_view(template_name='home.html')),
     path('about-us/', TemplateView.as_view(template_name='about_us.html')),
