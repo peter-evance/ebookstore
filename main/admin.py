@@ -8,8 +8,9 @@ from django.db.models import Avg, Count, Min, Sum
 from django.urls import path
 from django.template.response import TemplateResponse
 from . import models
-logger = logging.getLogger(__name__)
 
+
+logger = logging.getLogger(__name__)
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "in_stock", "price")
@@ -58,9 +59,9 @@ class BookTagAdmin(admin.ModelAdmin):
         else:
             return {}
 class BookImageAdmin(admin.ModelAdmin):
-    list_display = ("thumbnail_tag", "Book_name")
+    list_display = ("thumbnail_tag", "book_name")
     readonly_fields = ("thumbnail",)
-    search_fields = ("Book__name",)
+    search_fields = ("book_name",)
     # this function returns HTML for the first column defined
     # in the list_display property above
     
@@ -70,11 +71,12 @@ class BookImageAdmin(admin.ModelAdmin):
                 '<img src="%s"/>' % obj.thumbnail.url
                 )
         return "-"
-    # this defines the column name for the list_display
     
+    # this defines the column name for the list_display
     thumbnail_tag.short_description = "Thumbnail"
-    def Book_name(self, obj):
-        return obj.Book.name
+    
+    def book_name(self, obj):
+        return obj.book.name
 class UserAdmin(DjangoUserAdmin):
     # User model has a lot of fields, which is why we are
     # reorganizing them for readability
@@ -133,7 +135,7 @@ class AddressAdmin(admin.ModelAdmin):
 
 class BasketLineInline(admin.TabularInline):
     model = models.BasketLine
-    raw_id_fields = ("Book",)
+    raw_id_fields = ("book",)
 class BasketAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "status", "count")
     list_editable = ("status",)

@@ -51,9 +51,10 @@ class ContactUsView(FormView):
 
 
 class BookListView(ListView):
-    '''Depending on the content of kwargs, this view returns a
-list of active books belonging to that tag, or simply all active ones if the
-tag all is specified'''
+    '''Depending on the content of kwargs, this view returns a 
+    list of active books belonging to that tag, or simply all active ones if the
+    tag all is specified
+    '''
     template_name = "main/book_list.html"
     paginate_by = 5
 

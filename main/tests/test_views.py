@@ -49,8 +49,7 @@ class TestPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ebookstore")
         book_list = models.Book.objects.active().order_by("name")
-        self.assertEqual(
-            list(response.context["object_list"]), list(book_list))
+        self.assertEqual(list(response.context["object_list"]), list(book_list))
 
     def test_products_page_filters_by_tags_and_active(self):
         cb = models.Book.objects.create(
@@ -62,23 +61,18 @@ class TestPage(TestCase):
             name="Microsoft Windows guide",
             slug="microsoft-windows-guide",
             price=Decimal("12.00"))
-        response = self.client.get(
-            reverse("books", kwargs={"tag": "opensource"}))
+        response = self.client.get(reverse("books", kwargs={"tag": "opensource"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ebookstore")
-        book_list = (models.Book.objects.active().filter(
-            tags__slug="opensource").order_by("name"))
-        self.assertEqual(
-            list(response.context["object_list"]), list(book_list))
+        book_list = (models.Book.objects.active().filter(tags_slug="opensource").order_by("name"))
+        self.assertEqual(list(response.context["object_list"]), list(book_list))
 
     def test_user_signup_page_loads_correctly(self):
         response = self.client.get(reverse("signup"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "signup.html")
         self.assertContains(response, "ebookstore")
-        self.assertIsInstance(
-            response.context["form"], forms.UserCreationForm
-            )
+        self.assertIsInstance(response.context["form"], forms.UserCreationForm)
     
     def test_user_signup_page_submission_works(self):
         post_data = {
