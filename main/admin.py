@@ -21,7 +21,7 @@ class BookAdmin(admin.ModelAdmin):
     autocomplete_fields = ("tags",)
     # slug is an important field for our site, it is used in
     # all the Book URLs. We want to limit the ability to
-    # # change this only to the owners of the company.
+    # change this only to the owners of the company.
     
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
@@ -129,7 +129,6 @@ class AddressAdmin(admin.ModelAdmin):
         "address1",
         "address2",
         "city",
-        "country",
         )
     readonly_fields = ("user",)
 
@@ -143,11 +142,11 @@ class BasketAdmin(admin.ModelAdmin):
     inlines = (BasketLineInline,)
 class OrderLineInline(admin.TabularInline):
     model = models.OrderLine
-    raw_id_fields = ("Book",)
+    raw_id_fields = ("book",)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "status")
     list_editable = ("status",)
-    list_filter = ("status", "shipping_country", "date_added")
+    list_filter = ("status", "shipping_county", "date_added")
     inlines = (OrderLineInline,)
     fieldsets = (
         (None, {"fields": ("user", "status")}),
@@ -160,7 +159,7 @@ class OrderAdmin(admin.ModelAdmin):
                     "billing_address2",
                     "billing_zip_code",
                     "billing_city",
-                    "billing_country",
+                    "billing_county",
                     )
                 },
             ),
@@ -173,7 +172,7 @@ class OrderAdmin(admin.ModelAdmin):
                     "shipping_address2",
                     "shipping_zip_code",
                     "shipping_city",
-                    "shipping_country",
+                    "shipping_county",
                     )
                 },
             ),
@@ -183,12 +182,12 @@ class OrderAdmin(admin.ModelAdmin):
 # without adding and removing lines
 class CentralOfficeOrderLineInline(admin.TabularInline):
     model = models.OrderLine
-    readonly_fields = ("Book",)
+    readonly_fields = ("book",)
 class CentralOfficeOrderAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "status")
     list_editable = ("status",)
     readonly_fields = ("user",)
-    list_filter = ("status", "shipping_country", "date_added")
+    list_filter = ("status", "shipping_county", "date_added")
     inlines = (CentralOfficeOrderLineInline,)
     fieldsets = (
         (None, {"fields": ("user", "status")}),
@@ -201,7 +200,7 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
                     "billing_address2",
                     "billing_zip_code",
                     "billing_city",
-                    "billing_country",
+                    "billing_county",
                     )
                 },
             ),
@@ -214,7 +213,7 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
                     "shipping_address2",
                     "shipping_zip_code",
                     "shipping_city",
-                    "shipping_country",
+                    "shipping_county",
                     )
                 },
             ),
@@ -227,7 +226,7 @@ class DispatchersOrderAdmin(admin.ModelAdmin):
         "date_added",
         "status",
         )
-    list_filter = ("status", "shipping_country", "date_added")
+    list_filter = ("status", "shipping_county", "date_added")
     inlines = (CentralOfficeOrderLineInline,)
     fieldsets = (
         (
@@ -239,7 +238,7 @@ class DispatchersOrderAdmin(admin.ModelAdmin):
                     "shipping_address2",
                     "shipping_zip_code",
                     "shipping_city",
-                    "shipping_country",
+                    "shipping_county",
                     )
                 },
             ),
@@ -279,15 +278,7 @@ class ReportingColoredAdminSite(ColoredAdminSite):
     def orders_per_day(self, request):
         starting_day = datetime.now() - timedelta(days=180)
         order_data = (
-            models.Order.objects.filter(
-                date_added__gt=starting_day
-                )
-            .annotate(
-                day=TruncDay("date_added")
-                )
-            .values("day")
-            .annotate(c=Count("id"))
-            )
+            models.Order.objects.filter(date_added__gt=starting_day).annotate(day=TruncDay("date_added")).values("day").annotate(c=Count("id")))
         labels = [
             x["day"].strftime("%Y-%m-%d") for x in order_data
             ]
