@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import (UserAdmin as DjangoUserAdmin)
 from django.utils.html import format_html
 from django.db.models.functions import TruncDay
-from django.db.models import Avg, Count, Min, Sum
+from django.db.models import Avg, Count
 from django.urls import path
 from django.template.response import TemplateResponse
 from . import models
