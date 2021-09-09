@@ -6,6 +6,4 @@ class MainConfig(AppConfig):
     name = 'main'
 
     def ready(self):
-        '''Ensures the signals are register at each instances of requests - 
-        handlers will be called for every new book image uploaded.'''
         from . import signals
