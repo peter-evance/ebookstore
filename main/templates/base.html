@@ -9,13 +9,14 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href= "{% static bootstrap.min.css %}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <title>ebookstore</title>
 
     </head>
     <body>
 
         <nav class="navbar navabar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/"> EBOOKSTORE</a>
+            <a class="navbar-brand" href="/"> EBOOKSTORE </a>
             <button class="navbar-toggler"
                     type="button"
                     data-toggle="collapse"
@@ -27,15 +28,14 @@
 
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item {% if request.path == '/' %} active {% endif %}">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/"> Home </a>
                     </li>
                     <li class="nav-item {% if request.path == '/about-us/' %} active {% endif %}">
-                        <a class="nav-link" href="/about-us/">About us</a>
+                        <a class="nav-link" href="/about-us/"> About us </a>
                     </li>
                 </ul>
             
             </div>       
-
         </nav>
 
         {% for message in messages %}
@@ -55,12 +55,15 @@
         {% endblock content %}
 
         <script>
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js">
             src="{% static jquery.min.js %}"
         </script>
         <script>
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js">
             src="{% static popper.min.js %}"
         </script>
         <script>
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
             src="{% static bootstrap.min.js %}"
         </script>
         {% block js %}

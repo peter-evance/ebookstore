@@ -49,15 +49,15 @@ class BookTagAdmin(admin.ModelAdmin):
     # tag slugs also appear in urls, therefore it is a
     # property only owners can change
     
-    def get_readonly_fields(self, request, obj=None):
-        if request.user.is_superuser:
-            return self.readonly_field
-        return list(self.readonly_fields) + ["slug", "name"]
-    def get_prepopulated_fields(self, request, obj=None):
-        if request.user.is_superuser:
-            return self.prepopulated_fields
-        else:
-            return {}
+    # def get_readonly_fields(self, request, obj=None):
+    #     if request.user.is_superuser:
+    #         return self.readonly_field
+    #     return list(self.readonly_fields) + ["slug", "name"]
+    # def get_prepopulated_fields(self, request, obj=None):
+    #     if request.user.is_superuser:
+    #         return self.prepopulated_fields
+    #     else:
+    #         return {}
 class BookImageAdmin(admin.ModelAdmin):
     list_display = ("thumbnail_tag", "book_name")
     readonly_fields = ("thumbnail",)
