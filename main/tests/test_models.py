@@ -3,6 +3,12 @@ from main import models
 from decimal import Decimal
 
 class TestModels(TestCase):
+    
+    def test_book_manager_works(self):
+        models.Book.objects.create(
+            name="The cathedral and the bazaar", price=Decimal("10.00"))
+        self.assertEqual(len(models.Book.objects.active()), 1)
+    
     def test_create_order_works(self):
         p1 = models.Book.objects.create(
             name="The cathedral and the bazaar",
