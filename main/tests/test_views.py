@@ -34,12 +34,12 @@ class TestPage(TestCase):
         self.assertIsInstance(
             response.context['form'], forms.ContactUsForm)
 
-    def test_products_page_returns_active(self):
+    def test_books_page_returns_active(self):
         models.Book.objects.create(
             name="The cathedral and the bazaar",
             slug="cathedral-bazaar",
             price=Decimal("10.00"),)
-        models.Product.objects.create(
+        models.Book.objects.create(
             name="A Tale of Two Cities",
             slug="tale-two-cities",
             price=Decimal("2.00"),
