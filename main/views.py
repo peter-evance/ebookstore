@@ -56,7 +56,7 @@ class BookListView(ListView):
     list of active books belonging to that tag, or simply all active ones if the
     tag all is specified
     '''
-    template_name = "main/book_list.html"
+    template_name = "book_list.html"
     paginate_by = 5
 
     def get_queryset(self):

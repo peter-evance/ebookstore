@@ -1,6 +1,6 @@
-{% extends"base.html" %}
+{% extends "base.html" %}
 {% block content %}
-  <h1>books</h1>
+  <h1>Books</h1>
   <table class="table">
     <tr>
       <th>Name</th>
@@ -9,12 +9,33 @@
     <tr>
       <th>Cover images</th>
       <td>
-        <div id="imagebox">
-          Loading...
-        </div>
-      </td>
+            {% for image in object.bookimage_set.all %}
+            <img src="{{ image.thumbnail.url }}" alt="cover"/>
+            {% endfor %}
+       </td>
     </tr>
-    ...
+    <tr>
+        <th>Price</th>
+            <td>{{ object.price }}</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+            <td>
+                {{ object.description|linebreaks }}
+            </td>
+    </tr>
+    <tr>
+        <th>Tags</th>
+        <td>{{ object.tags.all|join:","|default:"No tags available" }}</td>
+    </tr>
+    <tr>
+        <th>In stock</th>
+            <td>{{ object.in_stock|yesno|capfirst }}</td>
+    </tr>
+    <tr>
+        <th>Updated</th>
+            <td>{{ object.date_updated|date:"F Y" }}</td>
+    </tr>
 </table>
 {% endblock content %}
 {% block js %}
