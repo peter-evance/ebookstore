@@ -1,7 +1,7 @@
 import logging
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
-from django.views.generic.edit import FormView, CreateView,UpdateView,DeleteView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404,render
 from django.urls import reverse_lazy,reverse
