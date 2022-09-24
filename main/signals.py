@@ -7,13 +7,13 @@ from django.dispatch import receiver
 from .models import BookImage,Basket,Order, OrderLine
 from django.contrib.auth.signals import user_logged_in
 
-THUMBNAIL_SIZE = (300, 300)
+THUMBNAIL_SIZE = (150, 150)
 
 logger = logging.getLogger(__name__)
 
 
 @receiver(pre_save, sender=BookImage)
-def generate_thumbnail(sender, instance, ** kwargs):
+def generate_thumbnail(sender, instance, **kwargs):
     logger.info('Generating thumbnail for book %d', instance.book.id)
 
     image = Image.open(instance.image)
@@ -24,8 +24,7 @@ def generate_thumbnail(sender, instance, ** kwargs):
     temp_thumb.seek(0)
 
     # save=False, because otherwise it will run in an infinite loop!
-    instance.thumbnail.save(instance.image.name, ContentFile(
-        temp_thumb.read()), save=False)
+    instance.thumbnail.save(instance.image.name, ContentFile(temp_thumb.read()), save=False)
     temp_thumb.close()
 
 @receiver(user_logged_in)

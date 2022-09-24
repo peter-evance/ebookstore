@@ -26,13 +26,12 @@ class TestPage(TestCase):
         self.assertContains(response, 'ebookstore')
 
     def test_contact_us_page_works(self):
-        # response = self.client.get(reverse('contact_us'))
-        response = self.client.get('/contact_us/')
+        response = self.client.get(reverse('contact_us'))
+        # response = self.client.get('/contact_us/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contact_us.html')
         self.assertContains(response, 'ebookstore')
-        self.assertIsInstance(
-            response.context['form'], forms.ContactUsForm)
+        self.assertIsInstance(response.context['form'], forms.ContactUsForm)
 
     def test_books_page_returns_active(self):
         models.Book.objects.create(

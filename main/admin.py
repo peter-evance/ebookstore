@@ -13,15 +13,15 @@ from . import models
 logger = logging.getLogger(__name__)
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "in_stock", "price")
+    list_display = ("name","price","in_stock",)
     list_filter = ("active", "in_stock", "date_updated")
     list_editable = ("in_stock",)
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     autocomplete_fields = ("tags",)
     # slug is an important field for our site, it is used in
-    # all the Book URLs. We want to limit the ability to
-    # change this only to the owners of the company.
+    # all the Book URLs. Ability to
+    # change this only is granted to the owners of the bookstore.
     
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
@@ -59,7 +59,7 @@ class BookTagAdmin(admin.ModelAdmin):
     #     else:
     #         return {}
 class BookImageAdmin(admin.ModelAdmin):
-    list_display = ("thumbnail_tag", "book_name")
+    list_display = ( "book_name","thumbnail_tag")
     readonly_fields = ("thumbnail",)
     search_fields = ("book_name",)
     # this function returns HTML for the first column defined
@@ -67,13 +67,11 @@ class BookImageAdmin(admin.ModelAdmin):
     
     def thumbnail_tag(self, obj):
         if obj.thumbnail:
-            return format_html(
-                '<img src="%s"/>' % obj.thumbnail.url
-                )
+            return format_html('<img src="%s"/>' % obj.thumbnail.url)
         return "-"
     
     # this defines the column name for the list_display
-    thumbnail_tag.short_description = "Thumbnail"
+    thumbnail_tag.short_description = "Thumbnail Image"
     
     def book_name(self, obj):
         return obj.book.name
