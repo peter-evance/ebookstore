@@ -9,9 +9,12 @@
     <tr>
       <th>Cover images</th>
       <td>
-            {% for image in object.bookimage_set.all %}
+            <div id="imagebox">
+                Loading...
+            </div>
+            <!-- {% for image in object.bookimage_set.all %}
             <img src="{{ image.thumbnail.url }}" alt="cover"/>
-            {% endfor %}
+            {% endfor %} -->
        </td>
     </tr>
     <tr>
@@ -83,7 +86,7 @@ return e('div', {className: "gallery"},
 document.addEventListener("DOMContentLoaded",
   function(event) {
     var images = [
-    {% for image in object.bookimage_set.all %}
+   {% for image in object.bookimage_set.all %}
         {"image": "{{ image.image.url|safe }}",
         "thumbnail": "{{ image.thumbnail.url|safe }}"},
     {% endfor %}
