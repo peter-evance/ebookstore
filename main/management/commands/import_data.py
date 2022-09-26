@@ -1,11 +1,10 @@
-from os import name
+import os.path
+import csv
 from django.core.management.base import BaseCommand
 from collections import Counter
 from django.core.files.images import ImageFile
 from django.template.defaultfilters import slugify
 from main import models
-import os.path
-import csv
 
 
 class Command(BaseCommand):
