@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h1>Books</h1>
+    <h2><b>BOOKS</b></h2>
     {% for book in page_obj %}
         <p>{{ book.name }}</p>
         <p>
@@ -17,9 +17,10 @@
             {% if page_obj.has_previous %}
                 <li class="page-item">
                     <a
-                    class="page-link"
-                    href="?page={{page_obj.previous_page_number}}">
-                    Previous</a>
+                        class="page-link"
+                        href="?page={{page_obj.previous_page_number}}">
+                        Previous
+                    </a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
