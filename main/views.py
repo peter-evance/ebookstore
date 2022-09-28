@@ -3,11 +3,11 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404,render
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse_lazy,reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from main import models, forms
 from django.http import HttpResponseRedirect
+from main import models, forms
 
 
 logger = logging.getLogger(__name__)
@@ -16,10 +16,11 @@ logger = logging.getLogger(__name__)
 class SignupView(FormView):
     template_name = "signup.html"
     form_class = forms.UserCreationForm
+    success_url = reverse_lazy("next")
     
-    def get_success_url(self):
-        redirect_to = self.request.GET.get("next", "/")
-        return redirect_to
+    # def get_success_url(self):
+    #     redirect_to = self.request.GET.get("next", "/")
+    #     return redirect_to
     
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -28,14 +29,12 @@ class SignupView(FormView):
         email = form.cleaned_data.get("email")
         raw_password = form.cleaned_data.get("password1")
         logger.info(
-            "New signup for email=%s through SignupView", email
-            )
+            "New signup for email=%s through SignupView", email)
         user = authenticate(email=email, password=raw_password)
         login(self.request, user)
         form.send_mail()
         messages.info(
-            self.request, "You signed up successfully."
-            )
+            self.request, "You signed up successfully.")
         return response
 
 
@@ -79,16 +78,13 @@ class AddressListView(LoginRequiredMixin, ListView):
 
 class AddressCreateView(LoginRequiredMixin, CreateView):
     model = models.Address
+    success_url = reverse_lazy("address_list")
     fields = [
         "name",
-        "address1",
-        "address2",
-        "zip_code",
+        "address",
         "city",
         "county",
     ]
-    
-    success_url = reverse_lazy("address_list")
     
     def form_valid(self, form):
         obj= form.save(commit=False)
@@ -99,24 +95,20 @@ class AddressCreateView(LoginRequiredMixin, CreateView):
     
 class AddressUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Address
+    success_url = reverse_lazy("address_list")
     
     fields = [
         "name",
-        "address1",
-        "address2",
-        "zip_code",
+        "address",
         "city",
         "county",
         ]
-    
-    success_url = reverse_lazy("address_list")
     
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
     
 class AddressDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Address
-    
     success_url = reverse_lazy("address_list")
     
     def get_queryset(self):

@@ -119,27 +119,25 @@ class BookImage(models.Model):
 class Address(models.Model):
     SUPPORTED_COUNTIES =(
         ('ksm', 'Kisumu'),
-        ('nrb', 'nairobi'),
-        ('mbm', 'Mombasa')
+        ('nrb', 'Nairobi'),
+        ('mbm', 'Mombasa'),
+        ('nkr', 'Nakuru'),
+        ('mig', 'Migori')
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=60)
-    address1 = models.CharField("Address line 1", max_length=60)
-    address2 = models.CharField("Address line 2", max_length=60, blank=True)
-    zip_code = models.CharField("ZIP / Postal code", max_length=12)
-    city = models.CharField(max_length=60)
-    country = models.CharField(max_length=3, choices=SUPPORTED_COUNTIES)
+    name = models.CharField(max_length=35)
+    address = models.CharField("Address line", max_length=60)
+    city = models.CharField(max_length=35)
+    county = models.CharField(max_length=3, choices=SUPPORTED_COUNTIES)
     
     
     def __str__(self):
         return ", ".join(
             [
                 self.name,
-                self.address1,
-                self.address2,
-                self.zip_code,
+                self.address,
                 self.city,
-                self.country,
+                self.county,
             ]
             )
         

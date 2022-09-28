@@ -124,8 +124,7 @@ class AddressAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "name",
-        "address1",
-        "address2",
+        "address",
         "city",
         )
     readonly_fields = ("user",)
