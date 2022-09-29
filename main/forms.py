@@ -18,9 +18,11 @@ class UserCreationForm(DjangoUserCreationForm):
         field_classes = {"email": UsernameField}
         
     def send_mail(self):
-        logger.info(f"Sending signup email for email {self.cleaned_data['email']}")
-        message = f"Welcome {self.cleaned_data['email']}"
-        send_mail("Welcome to ebookstore",message,"site@ebookstore.domain",[self.cleaned_data["email"]],fail_silently=True,)
+        logger.info("Sending signup email for email {}".format(self.cleaned_data['email']))
+        message = "Welcome {}".format(self.cleaned_data['email'])
+        send_mail("Welcome to ebookstore",
+                  message,"site@ebookstore.domain",
+                  [self.cleaned_data["email"]],fail_silently=True,)
         
 
 class AuthenticationForm(forms.Form):
@@ -29,7 +31,7 @@ class AuthenticationForm(forms.Form):
         strip=False, widget=forms.PasswordInput
     )
 
-    def __init_(self, request=None,*args,**kwargs):
+    def __init__(self, request=None,*args,**kwargs):
         self.request = request
         self.user = None
         super().__init__(*args, **kwargs)
