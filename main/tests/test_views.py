@@ -51,19 +51,15 @@ class TestPage(TestCase):
         self.assertEqual(list(response.context["object_list"]), list(book_list))
 
     def test_products_page_filters_by_tags_and_active(self):
-        cb = models.Book.objects.create(
-            name="The cathedral and the bazaar",
-            slug="cathedral-bazaar",
-            price=Decimal("10.00"))
-        cb.tags.create(name="Open source", slug="opensource")
-        models.Book.objects.create(
-            name="Microsoft Windows guide",
-            slug="microsoft-windows-guide",
-            price=Decimal("12.00"))
-        response = self.client.get(reverse("books", kwargs={"tag": "opensource"}))
+        cp = models.Book.objects.create(
+            name="The Laws of Human Nature",
+            slug="the-laws-of-human-nature",
+            price=Decimal("100.0"))
+        cp.tags.create(name="Personal development", slug="personal-development")
+        response = self.client.get(reverse("books", kwargs={"tag": "personal-development"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ebookstore")
-        book_list = (models.Book.objects.active().filter(tags_slug="opensource").order_by("name"))
+        book_list = (models.Book.objects.active().filter(slug="personal-development").order_by("name"))
         self.assertEqual(list(response.context["object_list"]), list(book_list))
 
     def test_user_signup_page_loads_correctly(self):
@@ -75,25 +71,20 @@ class TestPage(TestCase):
     
     def test_user_signup_page_submission_works(self):
         post_data = {
-            "email": "peterevance1@gmail.com",
-            "password1": "abcabcabc",
-            "password2": "abcabcabc",
+            "email": "testpeterevance1@gmail.com",
+            "password1": "Abc123",
+            "password2": "Abc123",
             }
         with patch.object(
-            forms.UserCreationForm, "send_mail"
-            ) as mock_send:
-            response = self.client.post(
-                reverse("signup"), post_data
-                )
+            forms.UserCreationForm, "send_mail") as mock_send:
+            response = self.client.post("/signup/", post_data)
+            # response = self.client.post(reverse("signup"), post_data,content_type='application/x-www-form-urlencoded')
+            # import pdb; pdb.set_trace()
         self.assertEqual(response.status_code, 302)
         self.assertTrue(
-            models.User.objects.filter(
-                email="peterevance1@gmail.com"
-            ).exists()
-        )
+            models.User.objects.filter(email="peterevance1@gmail.com").exists())
         self.assertTrue(
-            auth.get_user(self.client).is_authenticated
-        )
+            auth.get_user(self.client).is_authenticated)
         mock_send.assert_called_once()
         
     def test_address_list_page_returns_only_owned(self):
@@ -106,15 +97,14 @@ class TestPage(TestCase):
         models.Address.objects.create(
             user=user1,
             name="peter evance",
-            address1="flat 2",
-            address2="moi avenue",
+            address="state house",
             city="Nairobi",
             county="nrb",
             )
         models.Address.objects.create(
             user=user2,
             name="stephen omondi",
-            address1="Tom Mboya Ave.",
+            address="Tom Mboya Ave.",
             city="Kisumu",
             county="ksm",
             )
@@ -130,9 +120,7 @@ class TestPage(TestCase):
             )
         post_data = {
             "name": "james oketch",
-            "address1": "Likoni",
-            "address2": "",
-            "zip_code": "MA12GS",
+            "address": "Likoni",
             "city": "Mombasa",
             "county": "mbm",
             }
