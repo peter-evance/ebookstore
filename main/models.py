@@ -173,16 +173,12 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.IntegerField(choices=STATUSES, default=NEW)
     billing_name = models.CharField(max_length=60)
-    billing_address1 = models.CharField(max_length=60)
-    billing_address2 = models.CharField(max_length=60,blank=True)
-    billing_zip_code = models.CharField(max_length=12)
-    billing_city = models.CharField(max_length=60)
+    billing_address = models.CharField(max_length=60)
+    billing_town = models.CharField(max_length=60)
     billing_county = models.CharField(max_length=3)
     shipping_name = models.CharField(max_length=60)
-    shipping_address1 = models.CharField(max_length=60)
-    shipping_address2 = models.CharField(max_length=60, blank=True)
-    shipping_zip_code = models.CharField(max_length=12)
-    shipping_city = models.CharField(max_length=60)
+    shipping_address = models.CharField(max_length=60)
+    shipping_town = models.CharField(max_length=60)
     shipping_county = models.CharField(max_length=3)
     date_updated = models.DateTimeField(auto_now=True)
     date_added = models.DateTimeField(auto_now_add=True)
@@ -203,17 +199,13 @@ class Order(models.Model):
         order_data = {
             "user":self.user,
             "billing_name": billing_address.name,
-            "billing_address1": billing_address.address1,
-            "billing_address2": billing_address.address2,
-            "billing_zip_code": billing_address.zip_code,
-            "billing_city": billing_address.city,
-            "billing_country": billing_address.country,
+            "billing_address": billing_address.address,
+            "billing_town": billing_address.city,
+            "billing_county": billing_address.county,
             "shipping_name": shipping_address.name,
-            "shipping_address1": shipping_address.address1,
-            "shipping_address2": shipping_address.address2,
-            "shipping_zip_code": shipping_address.zip_code,
-            "shipping_city": shipping_address.city,
-            "shipping_country": shipping_address.country,
+            "shipping_address": shipping_address.address,
+            "shipping_town": shipping_address.city,
+            "shipping_county": shipping_address.county,
             }
         order = Order.objects.create(**order_data)
         c=0
