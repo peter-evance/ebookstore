@@ -12,6 +12,67 @@ from . import models
 
 logger = logging.getLogger(__name__)
 
+
+class UserAdmin(DjangoUserAdmin):
+    fieldsets = (
+        (None, {"fields": ("email", "password")}),
+        (
+            "Personal info",
+            {"fields": ("first_name", "last_name")},
+            ),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                    )
+                },
+            ),
+        (
+            "Important dates",
+            {"fields": ("last_login", "date_joined")},
+            ),
+        )
+    add_fieldsets = (
+        (None,{
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2"),
+                },
+            ),
+        )
+    list_display = (
+        "email",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_active"
+        )
+    search_fields = ("email", "first_name", "last_name")
+    ordering = ("email",)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class BookAdmin(admin.ModelAdmin):
     list_display = ("name","price","in_stock",)
     list_filter = ("active", "in_stock", "date_updated")
@@ -75,51 +136,7 @@ class BookImageAdmin(admin.ModelAdmin):
     
     def book_name(self, obj):
         return obj.book.name
-class UserAdmin(DjangoUserAdmin):
-    # User model has a lot of fields, which is why we are
-    # reorganizing them for readability
-    
-    fieldsets = (
-        (None, {"fields": ("email", "password")}),
-        (
-            "Personal info",
-            {"fields": ("first_name", "last_name")},
-            ),
-        (
-            "Permissions",
-            {
-                "fields": (
-                    "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                    )
-                },
-            ),
-        (
-            "Important dates",
-            
-            {"fields": ("last_login", "date_joined")},
-            ),
-        )
-    add_fieldsets = (
-        (
-            None,
-            {
-                "classes": ("wide",),
-                "fields": ("email", "password1", "password2"),
-                },
-            ),
-        )
-    list_display = (
-        "email",
-        "first_name",
-        "last_name",
-        "is_staff",
-        )
-    search_fields = ("email", "first_name", "last_name")
-    ordering = ("email",)
+
 class AddressAdmin(admin.ModelAdmin):
     list_display = (
         "user",
