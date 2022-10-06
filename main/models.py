@@ -1,7 +1,8 @@
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+import logging
 from django.db import models
 from django.core.validators import MinValueValidator
-import logging
 
 logger= logging.getLogger(__name__)
 
