@@ -123,35 +123,22 @@ class Address(models.Model):
         ('nrb', 'Nairobi'),
         ('mbm', 'Mombasa'),
         ('nkr', 'Nakuru'),
-        ('mig', 'Migori')
-    )
+        ('mig', 'Migori'))
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=35)
     address = models.CharField("Address line", max_length=60)
-    city = models.CharField(max_length=35)
+    town = models.CharField(max_length=35)
     county = models.CharField(max_length=3, choices=SUPPORTED_COUNTIES)
     
     
     def __str__(self):
-        return ", ".join(
-            [
-                self.name,
-                self.address,
-                self.city,
-                self.county,
-            ]
-            )
+        return ",".join([self.name,self.address,self.town,self.county,])
         
 class Basket(models.Model):
-    OPEN = 10
-    SUBMITTED = 20
-    STATUSES = (
-        (OPEN, "Open"),
-        (SUBMITTED, "Submitted")
-        )
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, blank=True, null=True
-        )
+    OPEN = 0
+    SUBMITTED = 1
+    STATUSES = ((OPEN, "Open"),(SUBMITTED, "Submitted"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=OPEN)
     
     def is_empty(self):

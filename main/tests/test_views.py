@@ -81,33 +81,25 @@ class TestPage(TestCase):
             # response = self.client.post(reverse("signup"), post_data,content_type='application/x-www-form-urlencoded')
             # import pdb; pdb.set_trace()
         # self.assertEqual(response.status_code, 302)
-        self.assertTrue(
-            models.User.objects.filter(email="testpeterevance1@gmail.com").exists())
-        self.assertTrue(
-            auth.get_user(self.client).is_authenticated)
+        self.assertTrue(models.User.objects.filter(email="testpeterevance1@gmail.com").exists())
+        self.assertTrue(auth.get_user(self.client).is_authenticated)
         mock_send.assert_called_once()
         
     def test_address_list_page_returns_only_owned(self):
-        user1 = models.User.objects.create_user(
-            "user1", "abcabc123"
-            )
-        user2 = models.User.objects.create_user(
-            "user2", "abcabc123"
-            )
+        user1 = models.User.objects.create_user("user1", "Abcabc_123")
+        user2 = models.User.objects.create_user("user2", "Abcabc_123")
         models.Address.objects.create(
             user=user1,
             name="peter evance",
             address="state house",
-            city="Nairobi",
-            county="nrb",
-            )
+            town="Nairobi",
+            county="nrb")
         models.Address.objects.create(
             user=user2,
             name="stephen omondi",
             address="Tom Mboya Ave.",
-            city="Kisumu",
-            county="ksm",
-            )
+            town="Kisumu",
+            county="ksm")
         self.client.force_login(user2)
         response = self.client.get(reverse("address_list"))
         self.assertEqual(response.status_code, 200)
@@ -115,83 +107,52 @@ class TestPage(TestCase):
         self.assertEqual(list(response.context["object_list"]),list(address_list))
 
     def test_address_create_stores_user(self):
-        user1 = models.User.objects.create_user(
-            "user1", "abcabc123"
-            )
+        user1 = models.User.objects.create_user("user1", "Abcabc_123")
         post_data = {
             "name": "james oketch",
-            "address": "Likoni",
-            "city": "Mombasa",
-            "county": "mbm",
-            }
+            "address": "likoni",
+            "town": "mombasa",
+            "county": "mbm"}
         self.client.force_login(user1)
         self.client.post(reverse("address_create"),post_data)
         self.assertTrue(models.Address.objects.filter(user=user1).exists())
         
-    def test_add_to_basket_loggedin_works(self):
-        user1 = models.User.objects.create_user(
-            "user1@a.com", "pw432joij"
-            )
-        cb = models.Book.objects.create(
-            name="The cathedral and the bazaar",
-            slug="cathedral-bazaar",
+    def test_add_to_basket_logged_in_works(self):
+        user1 = models.User.objects.create_user("anonymous@gmail.com", "Abcd_123")
+        b1 = models.Book.objects.create(
+            name="The way of men",
+            slug="the-way-of-men",
             price=Decimal("10.00"),
             )
-        w = models.Book.objects.create(
+        b2 = models.Book.objects.create(
             name="Microsoft Windows guide",
             slug="microsoft-windows-guide",
             price=Decimal("12.00"),
             )
         self.client.force_login(user1)
-        response = self.client.get(
-            reverse("add_to_basket"), {"book_id": cb.id}
-            )
-        response = self.client.get(
-            reverse("add_to_basket"), {"book_id": cb.id}
-            )
-        self.assertTrue(
-            models.Basket.objects.filter(user=user1).exists()
-            )
-        self.assertEquals(
-            models.BasketLine.objects.filter(
-                basket__user=user1).count(),1)
-        response = self.client.get(
-            reverse("add_to_basket"), {"book_id": w.id}
-            )
-        self.assertEquals(
-            models.BasketLine.objects.filter(
-                basket__user=user1).count(),2)
+        response = self.client.get(reverse("add_to_basket"), {"book_id": b1.id})
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
+        self.assertEquals(models.BasketLine.objects.filter(basket__user=user1).count(),1)
+        response = self.client.get(reverse("add_to_basket"), {"book_id": b2.id})
+        self.assertEquals(models.BasketLine.objects.filter(basket__user=user1).count(),2)
+        self.assertEqual(response.status_code, 302)
         
     def test_add_to_basket_login_merge_works(self):
-        user1 = models.User.objects.create_user(
-            "user1@a.com", "pw432joij"
-            )
-        cb = models.Book.objects.create(
-            name="The cathedral and the bazaar",
-            slug="cathedral-bazaar",
-            price=Decimal("10.00"),
-            )
-        w = models.Book.objects.create(
+        user1 = models.User.objects.create_user("anonymous@gmail.com", "Abcd_123")
+        b1 = models.Book.objects.create(
+            name="The way of men",
+            slug="the-way-of-men",
+            price=Decimal("10.00"))
+        b2 = models.Book.objects.create(
             name="Microsoft Windows guide",
             slug="microsoft-windows-guide",
-            price=Decimal("12.00"),
-            )
+            price=Decimal("12.00"))
         basket = models.Basket.objects.create(user=user1)
-        models.BasketLine.objects.create(
-            basket=basket, book=cb, quantity=2
-            )
-        response = self.client.get(
-            reverse("add_to_basket"), {"book_id": w.id}
-            )
-        response = self.client.post(
-            reverse("login"),
-            {"email": "user1@a.com", "password": "pw432joij"},
-            )
-        self.assertTrue(
-            auth.get_user(self.client).is_authenticated
-            )
-        self.assertTrue(
-            models.Basket.objects.filter(user=user1).exists()
-            )
+        models.BasketLine.objects.create(basket=basket, book=b1, quantity=3)
+        response = self.client.get(reverse("add_to_basket"), {"book_id": b1.id})
+        self.client.force_login(user1)
+        # response = self.client.post(reverse("login"),{"email": "anonymous@gmail.com", "password": "Abcd_123"})
+        self.assertTrue(auth.get_user(self.client).is_authenticated)
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
         basket = models.Basket.objects.get(user=user1)
         self.assertEquals(basket.count(),3)

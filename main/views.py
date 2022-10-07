@@ -16,25 +16,22 @@ logger = logging.getLogger(__name__)
 class SignupView(FormView):
     template_name = "signup.html"
     form_class = forms.UserCreationForm
-    success_url = reverse_lazy("next")
+    # success_url = reverse_lazy("next")
     
-    # def get_success_url(self):
-    #     redirect_to = self.request.GET.get("next", "/")
-    #     return redirect_to
+    def get_success_url(self):
+        redirect_to = self.request.GET.get("next", "/")
+        return redirect_to
     
     def form_valid(self, form):
         response = super().form_valid(form)
         form.save()
-        
         email = form.cleaned_data.get("email")
         raw_password = form.cleaned_data.get("password1")
-        logger.info(
-            "New signup for email=%s through SignupView", email)
+        logger.info("\n****\nNew signup for email (%s) through SignupView", email)
         user = authenticate(email=email, password=raw_password)
         login(self.request, user)
         form.send_mail()
-        messages.info(
-            self.request, "You signed up successfully.")
+        messages.info(self.request, "You signed up successfully.")
         return response
 
 
@@ -71,6 +68,7 @@ class BookListView(ListView):
         return books.order_by("name")
 
 class AddressListView(LoginRequiredMixin, ListView):
+    template_name = "address_list.html"
     model = models.Address
     
     def get_queryset(self):
@@ -78,37 +76,28 @@ class AddressListView(LoginRequiredMixin, ListView):
 
 class AddressCreateView(LoginRequiredMixin, CreateView):
     model = models.Address
+    template_name = "address_create.html"
     success_url = reverse_lazy("address_list")
-    fields = [
-        "name",
-        "address",
-        "city",
-        "county",
-    ]
+    fields = ["name","address","town","county",]
     
     def form_valid(self, form):
         obj= form.save(commit=False)
         obj.user= self.request.user
         obj.save()
         return super().form_valid(form)
-    
-    
+       
 class AddressUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Address
+    template_name = "address_update.html"
     success_url = reverse_lazy("address_list")
-    
-    fields = [
-        "name",
-        "address",
-        "city",
-        "county",
-        ]
+    fields = ["name","address","town","county",]
     
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
     
 class AddressDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Address
+    template_name = "address_confirm_delete.html"
     success_url = reverse_lazy("address_list")
     
     def get_queryset(self):
@@ -123,30 +112,23 @@ def add_to_basket(request):
             user = request.user
         else:
             user = None
-            basket = models.Basket.objects.create(user=user)
-            request.session["basket_id"] = basket.id
-            basketline, created = models.BasketLine.objects.get_or_create(
-                basket=basket, book=book
-                )
-            if not created:
-                basketline.quantity += 1
-                basketline.save()
-                return HttpResponseRedirect(
-                    reverse("book", args=(book.slug,)))
+        basket = models.Basket.objects.create(user=user)
+        request.session["basket_id"] = basket.id
+    basketline, created = models.BasketLine.objects.get_or_create(basket=basket, book=book)
+    if not created:
+        basketline.quantity += 1
+        basketline.save()
+    return HttpResponseRedirect(reverse("book", args=(book.slug,)))
 
 def manage_basket(request):
     if not request.basket:
         return render(request, "basket.html", {"formset": None})
     if request.method == "POST":
-        formset = forms.BasketLineFormSet(
-            request.POST, instance=request.basket
-            )
+        formset = forms.BasketLineFormSet(request.POST, instance=request.basket)
         if formset.is_valid():
             formset.save()
         else:
-            formset = forms.BasketLineFormSet(
-                instance=request.basket
-                )
+            formset = forms.BasketLineFormSet(instance=request.basket)
     if request.basket.is_empty():
         return render(request, "basket.html", {"formset": None})
     return render(request, "basket.html", {"formset": formset})

@@ -25,8 +25,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
-                <!-- Because of the django context processors we can access "request" variable thus able to perform 
-                an if statement for the instance of django.http.HttpRequest  -->
                 <li class="nav-item {% if request.path == "/" %}active{% endif %}">
                   <a class="nav-link" href="/">Home</a>
                 </li>
@@ -40,6 +38,12 @@
           {% for message in messages %}
               <div class="alert alert-{{ message.tags }}">{{ message }}</div>
           {% endfor %}
+
+          {% if request.basket %}
+            <div>
+              {{ request.basket.count }} items in basket
+            </div>
+          {% endif %}
 
         {% block content %}
 

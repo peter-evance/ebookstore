@@ -142,8 +142,7 @@ class AddressAdmin(admin.ModelAdmin):
         "user",
         "name",
         "address",
-        "city",
-        )
+        "town")
     readonly_fields = ("user",)
 
 class BasketLineInline(admin.TabularInline):
