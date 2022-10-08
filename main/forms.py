@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UsernameField
 from django.core.mail import send_mail
 from .models import User,Basket,BasketLine, Address
 from django.contrib.auth import authenticate
-from django.forms import inlineformset_factory, widgets
+from django.forms import widgets, inlineformset_factory
 from . import widgets
 
 logger = logging.getLogger(__name__)
@@ -64,14 +64,11 @@ BasketLineFormSet = inlineformset_factory(
     Basket,
     BasketLine,
     fields=("quantity",),
-    extra=0,
-    widgets={"quantity":widgets.PlusMinusNumberInput()},
-    )
+    extra=0,widgets={"quantity":widgets.PlusMinusNumberInput()})
 
 class AddressSelectionForm(forms.Form):
     billing_address = forms.ModelChoiceField(queryset=None)
-    shipping_address = forms.ModelChoiceField(
-        queryset=None)
+    shipping_address = forms.ModelChoiceField(queryset=None)
     
     def __init__(self, user, *args, **kwargs):
         super(). __init__(*args, **kwargs)
