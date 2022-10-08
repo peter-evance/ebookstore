@@ -168,10 +168,8 @@ class OrderAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "billing_name",
-                    "billing_address1",
-                    "billing_address2",
-                    "billing_zip_code",
-                    "billing_city",
+                    "billing_address",
+                    "billing_town",
                     "billing_county",
                     )
                 },
@@ -181,10 +179,8 @@ class OrderAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "shipping_name",
-                    "shipping_address1",
-                    "shipping_address2",
-                    "shipping_zip_code",
-                    "shipping_city",
+                    "shipping_address",
+                    "shipping_town",
                     "shipping_county",
                     )
                 },
