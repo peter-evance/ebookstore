@@ -68,7 +68,7 @@ class BookListView(ListView):
         return books.order_by("name")
 
 class AddressListView(LoginRequiredMixin, ListView):
-    template_name = "address_list.html"
+    template_name = "address_select.html"
     model = models.Address
     
     def get_queryset(self):
@@ -134,7 +134,7 @@ def manage_basket(request):
     return render(request, "basket.html", {"formset": formset})
 
 class AddressSelectionView(LoginRequiredMixin, FormView):
-    template_name = "templates/address_select.html"
+    template_name = "address_select.html"
     form_class = forms.AddressSelectionForm
     success_url = reverse_lazy('checkout_done')
     

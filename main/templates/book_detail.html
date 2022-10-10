@@ -1,52 +1,63 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <h1>Books</h1>
-  <table class="table">
-    <tr>
-      <th>Name</th>
-      <td>{{ object.name }}</td>
-    </tr>
-    <tr>
-      <th>Cover images</th>
-      <td>
-            {% for image in object.bookimage_set.all %}
-            <img src="{{ image.thumbnail.url }}" alt="cover"/>
-            {% endfor %}
-       </td>
-    </tr>
-    <tr>
-        <th>Price</th>
+    <h1>Books</h1>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <td>{{ object.name }}</td>
+        </tr>
+        <tr>
+            <th>Cover images</th>
+            <td>
+                <div id=""imagebox>
+                    Loading...
+                </div>
+                <!-- {% for image in object.bookimage_set.all %}
+                    <img src="{{ image.thumbnail.url }}" alt="cover"/>
+                {% endfor %} -->
+            </td>
+        </tr>
+        <tr>
+            <th>Price</th>
             <td>{{ object.price }}</td>
-    </tr>
-    <tr>
-        <th>Description</th>
+        </tr>
+        <tr>
+            <th>Description</th>
             <td>
                 {{ object.description|linebreaks }}
             </td>
-    </tr>
-    <tr>
-        <th>Tags</th>
-        <td>{{ object.tags.all|join:","|default:"No tags available" }}</td>
-    </tr>
-    <tr>
-        <th>In stock</th>
-            <td>{{ object.in_stock|yesno|capfirst }}</td>
-    </tr>
-    <tr>
-        <th>Updated</th>
-            <td>{{ object.date_updated|date:"F Y" }}</td>
-    </tr>
-</table>
+        </tr>
+        <tr>
+            <th>Tags</th>
+            <td>
+                {{ object.tags.all|join:","|default:"No tags available" }}
+            </td>
+        </tr>
+        <tr>
+            <th>In stock</th>
+            <td>
+                {{ object.in_stock|yesno|capfirst }}
+            </td>
+        </tr>
+        <tr>
+            <th>Updated</th>
+            <td>
+                {{ object.date_updated|date:"F Y" }}
+            </td>
+        </tr>
+    </table>
 
-<a href="{% url "add_to_basket" %}?product_id={{ object.id }}"> Add to basket</a>
+    <a href="{% url "add_to_basket" %}?product_id={{ object.id }}"> Add to basket</a>
 
 {% endblock content %}
+
 {% block js %}
 <script
-  src="https://unpkg.com/react@16/umd/react.production.min.js">
+    src="https://unpkg.com/react@16/umd/react.production.min.js">
 </script>
 <script
-  src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js">
+    src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js">
 </script>
 
 <style type="text/css" media="screen">.image{
@@ -54,47 +65,42 @@
     display: inline-block;
     }
 </style>
+
 <script>
-const e=React.createElement;
-class ImageBox extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-        currentImage: this.props.imageStart
-    }
-  }
-  click(image){
-    this.setState({
-        currentImage: image
-    });
-  }
-  render(){
-    const images = this.props.images.map((i)=>
-       e('div', {className: "image", key: i.id},
-        e('img', {onClick: this.click.bind(this, i),
-                 width: "100",
-                 src: i.thumbnail}),
-        ),
-    );
-return e('div', {className: "gallery"},
-        e('div', {className: "current-image"},
-          e('img',{src: this.state.currentImage.image})
-          ),
-        images)
-  }
-}
-document.addEventListener("DOMContentLoaded",
-  function(event) {
-    var images = [
-   {% for image in object.bookimage_set.all %}
-        {"image": "{{ image.image.url|safe }}",
-        "thumbnail": "{{ image.thumbnail.url|safe }}"},
-    {% endfor %}
-    ]
-    ReactDOM.render(
-        e(ImageBox, {images: images, imageStart: images[0]}),
-        document.getElementById('imagebox')
-    );
-  });
+    const e=React.createElement;
+
+    class ImageBox extends React.Component{
+        constructor(props){
+            super(props);
+            this.state = {
+                currentImage: this.props.imageStart}
+            }
+        click(image){
+            this.setState({
+                currentImage: image});
+            }
+        render(){
+            const images = this.props.images.map((i)=>
+                e('div', {className: "image", key: i.id},
+                e('img', {onClick: this.click.bind(this, i),
+                    width: "100",
+                    src: i.thumbnail}),),);
+        return e('div', {className: "gallery"},
+        e('div', {className: "current-image"},
+        e('img',{src: this.state.currentImage.image})),
+        images)}}
+        document.addEventListener("DOMContentLoaded",
+        function(event) {
+        var images = [
+        {% for image in object.bookimage_set.all %}
+        {"image": "{{ image.image.url|safe }}",
+        "thumbnail": "{{ image.thumbnail.url|safe }}"},
+        {% endfor %}]
+    
+        ReactDOM.render(
+            e(ImageBox, {images: images, imageStart: images[0]}),
+            document.getElementById('imagebox')
+            );
+            });
 </script>
 {% endblock %}

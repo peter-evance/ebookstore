@@ -55,24 +55,6 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ("email",)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class BookAdmin(admin.ModelAdmin):
     list_display = ("name","price","in_stock",)
     list_filter = ("active", "in_stock", "date_updated")
@@ -148,6 +130,7 @@ class AddressAdmin(admin.ModelAdmin):
 class BasketLineInline(admin.TabularInline):
     model = models.BasketLine
     raw_id_fields = ("book",)
+@admin.register(models.Basket)
 class BasketAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "status", "count")
     list_editable = ("status",)
@@ -156,6 +139,8 @@ class BasketAdmin(admin.ModelAdmin):
 class OrderLineInline(admin.TabularInline):
     model = models.OrderLine
     raw_id_fields = ("book",)
+
+@admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "status")
     list_editable = ("status",)
@@ -205,10 +190,8 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "billing_name",
-                    "billing_address1",
-                    "billing_address2",
-                    "billing_zip_code",
-                    "billing_city",
+                    "billing_address",
+                    "billing_town",
                     "billing_county",
                     )
                 },
@@ -218,10 +201,8 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "shipping_name",
-                    "shipping_address1",
-                    "shipping_address2",
-                    "shipping_zip_code",
-                    "shipping_city",
+                    "shipping_address",
+                    "shipping_town",
                     "shipping_county",
                     )
                 },
@@ -243,10 +224,8 @@ class DispatchersOrderAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "shipping_name",
-                    "shipping_address1",
-                    "shipping_address2",
-                    "shipping_zip_code",
-                    "shipping_city",
+                    "shipping_address",
+                    "shipping_town",
                     "shipping_county",
                     )
                 },
