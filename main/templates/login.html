@@ -12,7 +12,7 @@
         {{ form.email.label_tag }}
         <input
             type="email "
-            class="form-control {% if form.email.errors %} is-invalid {% endif %}"
+            class="form-control {% if form.emsail.errors %} is-invalid {% endif %}"
             id="id_email"
             name="email"
             placeholder="Your email"
@@ -27,7 +27,7 @@
         {{ form.password.label_tag }}
         <input
             type="password"
-            class="form-control{% if form.password.errors %} is-­invalid {% endif %}"
+            class="form-control{% if form.password.errors %} is-invalid {% endif %}"
             id="id_password"
             name="password"
             value="{{ form.password.value|default:'' }}">
