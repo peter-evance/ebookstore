@@ -12,16 +12,17 @@
         {{ address.get_county_display }}<br>
     </p>
     <p>
-    <a href="{% url 'address_update' address.id %}">Update address</a>
+        <a href="{% url 'address_update' address.id %}">Update address</a>
     </p>
     <p>
-     <a href="{% url 'address_delete' address.id %}">Delete address</a>
+        <a href="{% url 'address_delete' address.id %}">Delete address</a>
     </p>
+    
     {% if not forloop.last %}
-    <hr>
+        <hr>
     {% endif %}
-    {% endfor %}
-    <p>
+{% endfor %}
+<p>
     <a href="{% url 'address_create' %}">Add new address</a>
-    </p>
+</p>
 {% endblock content %}
