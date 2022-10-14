@@ -13,14 +13,14 @@ class TestPage(TestCase):
 
     def test_home_page_works(self):
         # response = self.client.get(reverse("home"))
-        response = self.client.get('/home/')
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
         self.assertContains(response, 'ebookstore')
 
     def test_about_us_works(self):
-        # response = self.client.get(reverse("about-us"))
-        response = self.client.get('/about_us/')
+        response = self.client.get(reverse("about-us"))
+        # response = self.client.get('/about_us/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'about_us.html')
         self.assertContains(response, 'ebookstore')
@@ -59,7 +59,7 @@ class TestPage(TestCase):
         response = self.client.get(reverse("books", kwargs={"tag": "personal-development"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ebookstore")
-        book_list = (models.Book.objects.active().filter(slug="personal-development").order_by("name"))
+        book_list = models.Book.objects.active().filter(tags__slug="personal-development")
         self.assertEqual(list(response.context["object_list"]), list(book_list))
 
     def test_user_signup_page_loads_correctly(self):

@@ -18,8 +18,7 @@
                 [ "change_bookimage", "main", "bookimage" ],
                 [ "delete_bookimage", "main", "bookimage" ],
                 [ "change_booktag", "main", "booktag" ]
-            ]
-        }
+            ]}
     },
     {
         "model": "auth.group",
