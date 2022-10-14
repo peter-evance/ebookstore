@@ -177,7 +177,7 @@ class Basket(models.Model):
                     "book": line.book}
                 order_line = OrderLine.objects.create(**order_line_data)
                 c += 1
-                logger.info("Created order with id=%s and lines_count=%s",order.id,c,)
+                logger.info("*******************\nCreated order with id=%s and lines_count=%s\n******************",order.id,c,)
         self.status = Basket.SUBMITTED
         self.save()
         return order
@@ -206,11 +206,14 @@ class Order(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     date_added = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f"Order no: { self.pk}"
+    
 class OrderLine(models.Model):
-    NEW = 10
-    PROCESSING = 20
-    SENT = 30
-    CANCELLED = 40
+    NEW = 1
+    PROCESSING = 2
+    SENT = 3
+    CANCELLED = 4
     STATUSES = ((NEW, "New"),(PROCESSING, "Processing"),(SENT, "Sent"),(CANCELLED, "Cancelled"),)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="lines")
     book = models.ForeignKey(Book, on_delete=models.PROTECT)
