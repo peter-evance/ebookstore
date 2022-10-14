@@ -121,6 +121,7 @@ def add_to_basket(request):
     return HttpResponseRedirect(reverse("book", args=(book.slug,)))
 
 def manage_basket(request):
+    formset = forms.BasketLineFormSet(instance=request.basket)
     if not request.basket:
         return render(request, "basket.html", {"formset": None})
     if request.method == "POST":
@@ -128,7 +129,7 @@ def manage_basket(request):
         if formset.is_valid():
             formset.save()
         else:
-            formset = forms.BasketLineFormSet(instance=request.basket)
+            formset
     if request.basket.is_empty():
         return render(request, "basket.html", {"formset": None})
     return render(request, "basket.html", {"formset": formset})
@@ -146,5 +147,7 @@ class AddressSelectionView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         del self.request.session['basket_id']
         basket = self.request.basket
-        basket.create_order(form.cleaned_data['billing_address'],form.cleaned_data['shipping_address'])
+        basket.create_order(
+            form.cleaned_data['billing_address'],
+            form.cleaned_data['shipping_address'])
         return super().form_valid(form)
