@@ -1,10 +1,10 @@
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.urls import path, include
-from main import models, views, forms
+from main import models, views, forms, endpoints
 from django.contrib.auth.views import LoginView
 from rest_framework import routers
-from main import endpoints
+
 
 router = routers.DefaultRouter()
 router.register(r'orderlines', endpoints.PaidOrderLineViewSet)
