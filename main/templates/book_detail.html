@@ -10,7 +10,7 @@
         <tr>
             <th>Cover images</th>
             <td>
-                <div id=""imagebox>
+                <div id="imagebox">
                     Loading...
                 </div>
                 <!-- {% for image in object.bookimage_set.all %}
@@ -48,7 +48,7 @@
         </tr>
     </table>
 
-    <a href="{% url "add_to_basket" %}?product_id={{ object.id }}"> Add to basket</a>
+    <a href="{% url "add_to_basket" %}?book_id={{ object.id }}"> Add to basket</a>
 
 {% endblock content %}
 
