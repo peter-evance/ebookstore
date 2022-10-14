@@ -17,7 +17,7 @@ class UserAdmin(DjangoUserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (
-            "Personal info",
+            "Personal information",
             {"fields": ("first_name", "last_name")},
             ),
         (
@@ -62,15 +62,11 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     autocomplete_fields = ("tags",)
-    # slug is an important field for our site, it is used in
-    # all the Book URLs. Ability to
-    # change this only is granted to the owners of the bookstore.
     
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
             return self.readonly_fields
         return list(self.readonly_fields) + ["slug", "name"]
-    # This is required for get_readonly_fields to work
     
     def get_prepopulated_fields(self, request, obj=None):
         if request.user.is_superuser:
@@ -89,31 +85,29 @@ class BookTagAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     
-    # tag slugs also appear in urls, therefore it is a
-    # property only owners can change
-    
-    # def get_readonly_fields(self, request, obj=None):
-    #     if request.user.is_superuser:
-    #         return self.readonly_field
-    #     return list(self.readonly_fields) + ["slug", "name"]
-    # def get_prepopulated_fields(self, request, obj=None):
-    #     if request.user.is_superuser:
-    #         return self.prepopulated_fields
-    #     else:
-    #         return {}
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return self.readonly_field
+        return list(self.readonly_fields) + ["slug", "name"]
+    def get_prepopulated_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return self.prepopulated_fields
+        else:
+            return {}
 class BookImageAdmin(admin.ModelAdmin):
     list_display = ( "book_name","thumbnail_tag")
     readonly_fields = ("thumbnail",)
-    search_fields = ("book_name",)
+    search_fields = ("book__name",)
+    
     # this function returns HTML for the first column defined
     # in the list_display property above
-    
     def thumbnail_tag(self, obj):
         if obj.thumbnail:
             return format_html('<img src="%s"/>' % obj.thumbnail.url)
         return "-"
     
-    # this defines the column name for the list_display
+    # this defines the column name for the list_display 
+    # that is done by the helper ``` short_description```
     thumbnail_tag.short_description = "Thumbnail Image"
     
     def book_name(self, obj):
@@ -139,6 +133,7 @@ class BasketAdmin(admin.ModelAdmin):
 class OrderLineInline(admin.TabularInline):
     model = models.OrderLine
     raw_id_fields = ("book",)
+    # readonly_fields = ('book',)
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -149,7 +144,7 @@ class OrderAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("user", "status")}),
         (
-            "Billing info",
+            "Billing information",
             {
                 "fields": (
                     "billing_name",
@@ -160,7 +155,7 @@ class OrderAdmin(admin.ModelAdmin):
                 },
             ),
         (
-            "Shipping info",
+            "Shipping information",
             {
                 "fields": (
                     "shipping_name",
@@ -171,8 +166,8 @@ class OrderAdmin(admin.ModelAdmin):
                 },
             ),
         )
-# Employees need a custom version of the order views because
-# they are not allowed to change Books already purchased
+# Employees have a custom version of the order views because
+# they are not allowed to change books already purchased
 # without adding and removing lines
 class CentralOfficeOrderLineInline(admin.TabularInline):
     model = models.OrderLine
@@ -186,7 +181,7 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("user", "status")}),
         (
-            "Billing info",
+            "Billing information",
             {
                 "fields": (
                     "billing_name",
@@ -197,7 +192,7 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
                 },
             ),
         (
-            "Shipping info",
+            "Shipping information",
             {
                 "fields": (
                     "shipping_name",
@@ -210,12 +205,7 @@ class CentralOfficeOrderAdmin(admin.ModelAdmin):
         )
 # Dispatchers do not need to see the billing address in the fields
 class DispatchersOrderAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "shipping_name",
-        "date_added",
-        "status",
-        )
+    list_display = ("id","shipping_name","date_added","status",)
     list_filter = ("status", "shipping_county", "date_added")
     inlines = (CentralOfficeOrderLineInline,)
     fieldsets = (
@@ -231,9 +221,9 @@ class DispatchersOrderAdmin(admin.ModelAdmin):
                 },
             ),
         )
-    # Dispatchers are only allowed to see orders that
-    # # are ready to be shipped
     
+    # Dispatchers are only allowed to see orders that
+    # are ready to be shipped
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.filter(status=models.Order.PAID)
@@ -243,11 +233,8 @@ class DispatchersOrderAdmin(admin.ModelAdmin):
 class ColoredAdminSite(admin.sites.AdminSite):
     def each_context(self, request):
         context = super().each_context(request)
-        context["site_header_color"] = getattr(
-            self, "site_header_color", None
-            )
-        context["module_caption_color"] = getattr(
-            self, "module_caption_color", None)
+        context["site_header_color"] = getattr(self, "site_header_color", None)
+        context["module_caption_color"] = getattr(self, "module_caption_color", None)
         return context
 
 # The following will add reporting views to the list of
@@ -256,30 +243,23 @@ class ReportingColoredAdminSite(ColoredAdminSite):
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path(
-                "orders_per_day/",
-                self.admin_view(self.orders_per_day),
-                )
+            path("orders_per_day/",self.admin_view(self.orders_per_day))
             ]
         return my_urls + urls
     
     def orders_per_day(self, request):
         starting_day = datetime.now() - timedelta(days=180)
         order_data = (
-            models.Order.objects.filter(date_added__gt=starting_day).annotate(day=TruncDay("date_added")).values("day").annotate(c=Count("id")))
-        labels = [
-            x["day"].strftime("%Y-%m-%d") for x in order_data
-            ]
+            models.Order.objects.filter(date_added__gt=starting_day).annotate(day=TruncDay("date_added"))
+            .values("day").annotate(c=Count("id")))
+        labels = [x["day"].strftime("%Y-%m-%d") for x in order_data]
         values = [x["c"] for x in order_data]
         context = dict(
             self.each_context(request),
             title="Orders per day",
             labels=labels,
-            values=values,
-            )
-        return TemplateResponse(
-            request, "orders_per_day.html", context
-            )
+            values=values)
+        return TemplateResponse(request, "orders_per_day.html", context)
         
     def index(self, request, extra_context=None):
         reporting_pages = [
@@ -293,32 +273,27 @@ class ReportingColoredAdminSite(ColoredAdminSite):
             extra_context = {"reporting_pages": reporting_pages}
             return super().index(request, extra_context)
 
-# Finally we define 3 instances of AdminSite, each with their own
-# set of required permissions and colors
+# AdminSite, each with their own set of required permissions and colors
 class OwnersAdminSite(ReportingColoredAdminSite):
-    site_header = "BookTime owners administration"
+    site_header = "EBOOKSTORE owners administration"
     site_header_color = "black"
     module_caption_color = "grey"
     def has_permission(self, request):
-        return (
-            request.user.is_active and request.user.is_superuser
-            )
+        return (request.user.is_active and request.user.is_superuser)
 class CentralOfficeAdminSite(ReportingColoredAdminSite):
-    site_header = "BookTime central office administration"
+    site_header = "EBOOKSTORE central office administration"
     site_header_color = "purple"
     module_caption_color = "pink"
     def has_permission(self, request):
-        return (
-            request.user.is_active and request.user.is_employee
-            )
+        return (request.user.is_active and request.user.is_employee)
 class DispatchersAdminSite(ColoredAdminSite):
-    site_header = "BookTime central dispatch administration"
+    site_header = "EBOOKSTORE central dispatch administration"
     site_header_color = "green"
     module_caption_color = "lightgreen"
     def has_permission(self, request):
-        return (
-            request.user.is_active and request.user.is_dispatcher
-            )
+        return (request.user.is_active and request.user.is_dispatcher
+                
+                )
 main_admin = OwnersAdminSite()
 main_admin.register(models.Book, BookAdmin)
 main_admin.register(models.BookTag, BookTagAdmin)
