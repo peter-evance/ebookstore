@@ -2,27 +2,13 @@
 
 {% block content %}
 
-<h1>List of your addresses:</h1>
+<h2> Select the billing & shipping addresses </h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
 
-{% for address in object_list %}
-    <p>
-        {{ address.name }}<br>
-        {{ address.address }}<br>
-        {{ address.town }}<br>
-        {{ address.get_county_display }}<br>
-    </p>
-    <p>
-        <a href="{% url 'address_update' address.id %}">Update address</a>
-    </p>
-    <p>
-        <a href="{% url 'address_delete' address.id %}">Delete address</a>
-    </p>
-    
-    {% if not forloop.last %}
-        <hr>
-    {% endif %}
-{% endfor %}
-<p>
-    <a href="{% url 'address_create' %}">Add new address</a>
-</p>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a class="btn btn-primary" href="{% url 'address_create' %}">Add a new one ? </a>
+</form>
+
 {% endblock content %}
