@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+        <title>Invoice</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <h1>EBOOKSTORE 📚</h1>
+                    <h2>Invoice Receipt</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    Invoice number: #{{ order.id }}
+                    <br/>
+                    Order Date:
+                    {{ order.date_added|date }}
+                </div>
+                <div class="col-4">
+                    {{ order.billing_name }}<br/>
+                    {{ order.billing_address }}<br/>
+                    {{ order.billing_town }}<br/>
+                    {{ order.billing_county }}<br/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <table
+                        class="table"
+                        style="width: 95%; margin: 50px 0px 50px 0px">
+                        <tr>
+                            <th>Book name</th>
+                            <th>Price</th>
+                        </tr>
+                            {% for line in order.lines.all %}
+                        <tr>
+                            <td>{{ line.book.name }}</td>
+                            <td>{{ line.book.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p>
+                        Please pay within 10 days
+                    </p>
+                    <p>
+                        Thank you for shopping with us! 
+                    </p>
+                    <p>
+                        EBOOKSTORE 📚
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
