@@ -58,6 +58,8 @@ MIDDLEWARE = [
 
 INTERNAL_IPS = ['127.0.0.1']
 
+DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap.html'
+
 
 ROOT_URLCONF = 'ebookstore.urls'
 
