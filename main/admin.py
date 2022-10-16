@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta
 import logging
 from django.contrib import admin
-from django.contrib.auth.admin import (UserAdmin as DjangoUserAdmin)
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.html import format_html
 from django.db.models.functions import TruncDay
-from django.db.models import Avg, Count
+from django.db.models import Count
 from django.urls import path
 from django.template.response import TemplateResponse
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
 from . import models, forms
-
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +59,14 @@ class UserAdmin(DjangoUserAdmin):
     ordering = ("email",)
 
 
+def make_active(self, request, queryset):
+    queryset.update(active=True)
+make_active.short_description = "Mark selected books as active"
+
+def make_inactive(self, request, queryset):
+    queryset.update(active=False)
+make_inactive.short_description = "Mark selected books as inactive"
+
 class BookAdmin(admin.ModelAdmin):
     list_display = ("name","price","in_stock",)
     list_filter = ("active", "in_stock", "date_updated")
@@ -62,6 +74,8 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     autocomplete_fields = ("tags",)
+    
+    actions = [make_active, make_inactive]
     
     def get_readonly_fields(self, request, obj=None):
         if request.user.is_superuser:
@@ -73,7 +87,37 @@ class BookAdmin(admin.ModelAdmin):
             return self.prepopulated_fields
         else:
             return {}
-        
+
+class InvoiceMixin:
+    # This mixin will be used for the invoice generation, which is 
+    # only available to owners and employees
+    
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path("invoice/<int:order_id>/",self.admin_view(self.invoice_for_order),name="invoice")]
+        return my_urls + urls
+    
+    def invoice_for_order(self, request, order_id):
+        order = get_object_or_404(models.Order, pk=order_id)
+        if request.GET.get("format") == "pdf":
+            html_string = render_to_string("invoice.html", {"order": order})
+            html = HTML(string=html_string, base_url=request.build_absolute_url())
+            result = html.write_pdf()
+            response = HttpResponse(content_type="application/pdf")
+            response["Content-Disposition"] = "inline; filename=invoice.pdf"
+            response["Content-Transfer-Encoding"] = "binary"
+            
+            with tempfile.NamedTemporaryFile( delete=True) as output:
+                output.write(result)
+                output.flush()
+                output = open(output.name, "rb")
+                binary_pdf = output.read()
+                response.write(binary_pdf)
+            return response
+        return render(request, "invoice.html", {"order": order})
+
+       
 class DispatchersBookAdmin(BookAdmin):
     readonly_fields = ("description", "price", "tags", "active")
     prepopulated_fields = {}
@@ -307,13 +351,13 @@ class ReportingColoredAdminSite(ColoredAdminSite):
             return super().index(request, extra_context)
 
 # AdminSite, each with their own set of required permissions and colors
-class OwnersAdminSite(ReportingColoredAdminSite):
+class OwnersAdminSite(InvoiceMixin, ReportingColoredAdminSite):
     site_header = "EBOOKSTORE owners administration"
     site_header_color = "black"
     module_caption_color = "grey"
     def has_permission(self, request):
         return (request.user.is_active and request.user.is_superuser)
-class CentralOfficeAdminSite(ReportingColoredAdminSite):
+class CentralOfficeAdminSite(InvoiceMixin, ReportingColoredAdminSite):
     site_header = "EBOOKSTORE central office administration"
     site_header_color = "purple"
     module_caption_color = "pink"
