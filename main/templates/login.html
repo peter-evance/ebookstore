@@ -12,7 +12,7 @@
         {{ form.email.label_tag }}
         <input
             type="email "
-            class="form-control {% if form.emsail.errors %} is-invalid {% endif %}"
+            class="form-control {% if form.email.errors %} is-invalid {% endif %}"
             id="id_email"
             name="email"
             placeholder="Your email"
@@ -37,7 +37,7 @@
             </div>
             {% endif %}
     </div>
-        <button type="submit" class="btn btn-­primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 {% endblock content %}
