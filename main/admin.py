@@ -129,10 +129,10 @@ class BookTagAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
     
-    def get_readonly_fields(self, request, obj=None):
-        if request.user.is_superuser:
-            return self.readonly_field
-        return list(self.readonly_fields) + ["slug", "name"]
+    # def get_readonly_fields(self, request, obj=None):
+    #     if request.user.is_superuser:
+    #         return self.readonly_field
+    #     return list(self.readonly_fields) + ["slug", "name"]
     def get_prepopulated_fields(self, request, obj=None):
         if request.user.is_superuser:
             return self.prepopulated_fields

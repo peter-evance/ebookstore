@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
     'django_extensions',
     'debug_toolbar',
     'django_tables2',
@@ -80,8 +81,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ebookstore.wsgi.application'
+ASGI_APPLICATION = 'ebookstore.routing.application'
 
-
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+}, }
 # Database
 
 DATABASES = {
