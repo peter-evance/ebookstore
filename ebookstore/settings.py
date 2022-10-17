@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_tables2',
     'main.apps.MainConfig',
+    'chats',
 ]
 
 MIDDLEWARE = [

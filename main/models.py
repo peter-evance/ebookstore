@@ -205,10 +205,11 @@ class Order(models.Model):
     shipping_county = models.CharField(max_length=3)
     date_updated = models.DateTimeField(auto_now=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    last_spoken_to = models.ForeignKey(User,null=True,related_name="cs_chats",on_delete=models.SET_NULL)
     
     def __str__(self):
         return f"Order no: { self.pk}"
-    
+
 class OrderLine(models.Model):
     NEW = 1
     PROCESSING = 2
