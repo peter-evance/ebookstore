@@ -177,6 +177,7 @@ class BasketAdmin(admin.ModelAdmin):
 class OrderLineInline(admin.TabularInline):
     model = models.OrderLine
     raw_id_fields = ("book",)
+    extra: 2
     # readonly_fields = ('book',)
 
 @admin.register(models.Order)
